@@ -64,7 +64,7 @@ export function gameScene() {
         // --- Player and Spawning Setup ---
 	 	const playerSpawnObj = map0.get("playerSpawn")[0];
 		// Player creation
-		const player = createPlayer(playerSpawnObj.pos.x, playerSpawnObj.pos.y - 5);
+		const player = createPlayer(playerSpawnObj.pos.x, playerSpawnObj.pos.y - 5,);
 
         // Calculate zombies for this wave (10 * wave number)
         const ZOMBIES_TO_SPAWN = wave * 3;
