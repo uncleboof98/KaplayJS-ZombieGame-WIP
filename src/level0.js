@@ -17,12 +17,12 @@ export function gameScene() {
 		add([
 			sprite("Lg-tree"),
 			scale(1),
-			pos(72,2),
+			pos(72,155),
 		]);
 		add([
 			sprite("Sm-tree"),
 			scale(1),
-			pos(264,72),
+			pos(182,208),
 		]);
 
         const map0 = addLevel([
@@ -38,13 +38,14 @@ export function gameScene() {
 		'X                          X',
 		'X                          X',
 		'X                          X',
-		'X                          X',
-		'X                          X',
-		'X                          X',
-		'Xbbb                       X',
-		'XbPb                       X',
-		'gggg                       X',
-		'ggggGGGGGGGGGGGGGGGGGGGGGGGG',
+		'X                      b   X',
+		'X                     bbb  X',
+		'X b                  b   b X',
+		'Xbbb                 b   b X',
+		'XbPb               GGGGGGGGG',
+		'GGGGGG     GGGGG   ggggggggg',
+		'ggggggGGGGGgggggGGGggggggggg',
+		'gggggggggggggggggggggggggggg',
         ],{
 				tileWidth: 16,
 				tileHeight: 16,
@@ -170,9 +171,7 @@ export function gameScene() {
 
         // --- Player Death Event (Triggers Game Over) ---
         on("death", "player", () => {
-            wait(1, () => {
-                go("game_over", { finalWave: wave });
-            });
+            go("game_over", { finalWave: wave });
         });
 	});
 
