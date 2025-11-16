@@ -1,0 +1,122 @@
+You're absolutely right\! My apologies for overcomplicating the combat. Since your existing attack logic already handles damage to enemies, we just need to ensure it also handles damage to the **new breakable walls** and then integrate the inventory and placing logic.
+
+We'll focus only on the new components: **new tile definitions**, **breakable wall damage/collection**, **inventory/health UI**, and **block placing**.
+
+Here is the revised plan, broken down by file:
+
+
+### B. Add Health, Inventory UI & Collection Logic
+
+Add these UI elements and the logic for what happens when a breakable block is destroyed:
+
+```javascript
+// Inside scene("game", (wave) => { ... } in level0.js:
+
+// ... existing wave_ui and zombie_counter UI ...
+
+// Player Health Display
+const healthDisplay = add([
+    text("HEALTH: 3", { size: 10 }),
+    pos(20, 8), // Positioned top-left
+    fixed(),
+    "health_display",
+]);
+
+// Block Inventory Display
+const inventoryDisplay = add([
+    text("BLOCKS: 0", { size: 10 }),
+    pos(20, 28), // Positioned below health
+    fixed(),
+    "inventory_display",
+]);
+
+// --- Breakable Block Destruction (Collection Logic) ---
+onDeath("breakable", (wall) => {
+    wall.destroy();
+    
+    // Find the player object to increase their inventory
+    const player = get("player")[0];
+    if (player) {player.blocks += 1;}
+});
+
+
+// --- onUpdate UI Refresh ---
+onUpdate(() => {
+    // ... existing zombie counter update ...
+
+    const player = get("player")[0];
+    if (player) {
+        // 1. Update Health
+        healthDisplay.text = `HEALTH: ${player.hp()}`;
+        
+        // 2. Update Inventory
+        inventoryDisplay.text = `BLOCKS: ${player.blocks}`;
+
+        // 3. Player Death Check (already implemented)
+    }
+    
+    // ... existing camera logic ...
+});
+```
+
+-----
+
+## 2\. `player.js` Updates (Properties and Block Placing) 🛠️
+
+### A. Add Inventory and Health Properties
+
+In your `createPlayer` function, add the necessary components and properties:
+
+```javascript
+export function createPlayer(posX, posY) {
+    // ... (Your existing player components) ...
+
+    const player = add([
+        // Ensure you have all your existing components here...
+        health(3), // <-- NEW: Adds health component
+        "player",
+        {
+            // NEW: Inventory and Max Health property
+            maxHealth: 3,
+            blocks: 0, 
+            
+            // Note: Keeping your existing attack logic/properties here!
+        }
+    ]);
+
+    // ... (Your existing movement controls) ...
+
+    // --- Block Placing Logic (mouseLeft) ---
+    // Assuming TILE_SIZE is imported or defined globally if needed.
+    const TILE_SIZE = 16; // Define TILE_SIZE here if it's not available globally in player.js
+
+    onKeyPress("x", () => {
+        if (player.blocks > 0) {
+            
+            // Calculate the placement position (right in front of the player, snapped to grid)
+            const snapX = Math.round(player.pos.x / TILE_SIZE) * TILE_SIZE;
+            const placePos = vec2(snapX, player.pos.y);
+            
+            // Create the new placeable block
+            add([
+                rect(TILE_SIZE, TILE_SIZE),
+                color(100, 100, 100), // Grey color for player blocks
+                pos(placePos.x, placePos.y),
+                area(),
+                body(), // <-- Gives it gravity (Tetris-style fall)
+                mass(50), // Makes it heavy enough not to be pushed easily
+                "ground", // Tag it as ground so player/zombies can stand on it
+                "placeable_block",
+            ]);
+
+            player.blocks -= 1;
+            // The UI update is handled in level0.js's onUpdate loop.
+        }
+    });
+
+    // ... (Your existing return statement) ...
+    return player;
+}
+```
+
+Now your existing melee attack (wherever it is defined) only needs to know that **"breakable"** objects exist and that they have the **`health(2)`** component\!

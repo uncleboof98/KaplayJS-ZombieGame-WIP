@@ -1,0 +1,19 @@
+List for zombie_wave_game:
+
+-Better background(s)
+-Better tiles/tilesets
+-Wave intermission;
+	“ready up” button
+	purchase screen
+	inventory view
+	new weapons - buyable
+	power-ups - buyable/unlockable;
+		health regen
+		faster speed
+		invincible for 3s on dmg
+		etc.
+-Zombie varients;
+	faster but weaker
+	stronger but slower
+	climbing zombies
+	jumper zombies
