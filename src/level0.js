@@ -3,6 +3,8 @@ import { createZombie } from "./zombie.js";
 const MAP_WIDTH_TILES = 55;
 const TILE_SIZE = 8;
 const MAP_WIDTH_PX = MAP_WIDTH_TILES * TILE_SIZE;
+const MAP_HEIGHT_TILES = 20;
+const MAP_HEIGHT_PX = MAP_HEIGHT_TILES * 16;
 
 export function gameScene() {
 	scene("game", (wave = 1) => {
@@ -163,10 +165,9 @@ export function gameScene() {
 
             // 4. Camera Follow/Clamp
 			camPos(
-                // Clamp X position to keep the view within the map bounds
-                clamp(player.pos.x, width() / 2, MAP_WIDTH_PX - width() / 2),
-                player.pos.y
-            );
+    			clamp(player.pos.x, width() / 2, MAP_WIDTH_PX - width() / 2),
+    			clamp(player.pos.y, height() / 2, MAP_HEIGHT_PX - height() / 2)
+			);
 		});
 
         // --- Player Death Event (Triggers Game Over) ---
